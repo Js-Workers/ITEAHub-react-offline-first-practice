@@ -13,12 +13,33 @@ export const CHANGE = 'CHANGE';
 export const DELETE = 'DELETE';
 
 function addItem(item) {
-  return {
-    type: ADD,
-    payload: {
-      item
-    }
-  };
+  return dispath => {
+    dispath(showLoader());
+
+    return fetch(`http://localhost/items/`, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify(item)
+    })
+    .then(item => item.json())
+    .then(item => {
+      dispath(hideLoader());
+
+      return dispath({
+        type: ADD,
+        payload: {
+          item
+        }
+      });
+    })
+    .catch(err => {
+      console.error('err', err);
+
+      dispath(hideLoader());
+    });
+  }
 }
 
 function getItem(id) {

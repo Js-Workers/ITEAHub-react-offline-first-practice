@@ -3,7 +3,7 @@ import {ADD, GET, CHANGE, DELETE} from '../actions/todos';
 export default {
   [ADD]: (state, {payload}) => {
     console.error('[ADD] payload', payload);
-    return state;
+    return state.concat(payload.item);
   },
   [GET]: (state, {payload}) => {
     console.error('payload', payload);
