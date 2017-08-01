@@ -1,13 +1,22 @@
 const path = require('path');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: [
-    './js/main.js'
-  ],
+  entry: {
+    main: './js/main.js',
+    vendors: [
+      'react',
+      'redux',
+      'react-redux',
+      'redux-thunk',
+      'react-dom'
+    ]
+  },
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, '../')
+    path: path.resolve(__dirname, '../'),
+    chunkFilename: './js/[name].js',
+    filename: './js/[name].js'
   },
   devtool: 'cheap-module-eval-source-map',
   module: {
@@ -24,14 +33,7 @@ module.exports = {
             query: {
               cacheDirectory: true
             }
-          },
-          // {
-          //   loader: 'eslint-loader',
-          //   query: {
-          //     failOnWarning: false,
-          //     failOnError: false
-          //   }
-          // }
+          }
         ]
       },
       {
@@ -55,7 +57,12 @@ module.exports = {
       }
     ]
   },
-  plugins: [],
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin({ name: 'vendors', filename: 'vendors.js' }),
+    new HtmlWebpackPlugin({
+      template: path.resolve('./index.html')
+    }),
+  ],
   resolve: {
     alias: {
       styles: path.resolve(__dirname, '../styles/')
